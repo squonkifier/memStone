@@ -15,8 +15,8 @@ SCRIPTS_DIR = Path(__file__).parent.parent / "scripts"
 
 
 def _load_config():
-    """Load configuration from shell.conf file."""
-    config_path = Path(__file__).parent.parent / "shell.conf"
+    """Load configuration from shell.json file."""
+    config_path = Path(__file__).parent.parent / "shell.json"
     if not config_path.exists():
         raise FileNotFoundError(f"Missing config file: {config_path}")
     with open(config_path, encoding="utf-8") as f:
