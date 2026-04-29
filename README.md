@@ -1,4 +1,6 @@
 # shellStone
+https://github.com/user-attachments/assets/eb19355a-4f71-44d7-9754-3d293f066560
+
 tiny terminal UI for fancy presentation of pre-commented shell scripts stored locally. In the spirit of [eos-welcome](https://github.com/endeavouros-team/welcome); Good for helping new users, good for one-off black book tricks whose purpose you'd forget. A Memory rock of shell ideas
 
 ## Benefits
