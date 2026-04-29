@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Admin-Meta: Title: Systemd - List Errored Services
+# Admin-Meta: Title: Systemd - List Halted Services
 # Admin-Meta: Description: List all systemd services that have failed, are inactive, or are in a halted state. Helps identify services that need attention.
 #
 # Shows failed units, inactive (dead) services, and services with error conditions.
