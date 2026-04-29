@@ -3,41 +3,46 @@ Core module for shellstone: Constants, data models, and script discovery.
 """
 
 import re
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
 
 # ---------------------------------------------------------------------------
-# Constants
+# Configuration Loading
 # ---------------------------------------------------------------------------
 SCRIPTS_DIR = Path(__file__).parent.parent / "scripts"
 
+
+def _load_config():
+    """Load configuration from shell.conf file."""
+    config_path = Path(__file__).parent.parent / "shell.conf"
+    if not config_path.exists():
+        raise FileNotFoundError(f"Missing config file: {config_path}")
+    with open(config_path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+_config = _load_config()
+
 # Top-level panes: (display_name, directory, color_pair)
 PANES = [
-    ("Main Menu", SCRIPTS_DIR / "system", 5),           # Blue
-    ("Packages", SCRIPTS_DIR / "packages", 2),  # Green
-    ("Filesystem", SCRIPTS_DIR / "filesystem", 0),
-    ("Networking", SCRIPTS_DIR / "networking", 3),
-    ("Extras", SCRIPTS_DIR / "extras", 4),  # Yellow
-    ("Help", SCRIPTS_DIR / "help", 1),
+    (name, SCRIPTS_DIR / dirname, color)
+    for name, dirname, color in _config["PANES"]
 ]
 
-META_TITLE_RE = re.compile(r"^#\s*Admin-Meta:\s*Title:\s*(.+)$", re.IGNORECASE)
-META_DESC_RE = re.compile(r"^#\s*Admin-Meta:\s*Description:\s*(.+)$", re.IGNORECASE)
-META_CAT_RE = re.compile(r"^#\s*Admin-Meta:\s*Category:\s*(.+)$", re.IGNORECASE)
+META_TITLE_RE = re.compile(_config["META_TITLE_RE"], re.IGNORECASE)
+META_DESC_RE = re.compile(_config["META_DESC_RE"], re.IGNORECASE)
+META_CAT_RE = re.compile(_config["META_CAT_RE"], re.IGNORECASE)
 
 # Spinner frames for selection indicator
-SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+SPINNER_FRAMES = _config["SPINNER_FRAMES"]
 
 # Particle layers for pseudo-3D (far to near)
-PARTICLE_LAYERS = [
-    ["·", "∙", "⋅", "⁺"],                   # Far
-    ["°", "∘", "⚬", "•", "◦", "⁎"],         # Mid
-    ["○", "●", "‣", "✧", "✦", "☾", "*"]      # Near
-]
-PARTICLE_COLORS_BASIC = [6, 3, 5, 4, 2]     # Fallback colors
-PARTICLE_DENSITY = 0.06  # Balanced density for the new engine
-BOTTOM_HEIGHT = 14  # Bottom section height for script summary
+PARTICLE_LAYERS = _config["PARTICLE_LAYERS"]
+PARTICLE_COLORS_BASIC = _config["PARTICLE_COLORS_BASIC"]
+PARTICLE_DENSITY = _config["PARTICLE_DENSITY"]
+BOTTOM_HEIGHT = _config["BOTTOM_HEIGHT"]
 
 
 # ---------------------------------------------------------------------------
