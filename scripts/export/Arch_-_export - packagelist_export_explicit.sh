@@ -6,3 +6,4 @@
 pacman -Qqe | tee ~/packagelist-explicit.log
 echo ""
         echo -e "\x1b[1;32mPackagelist exported to ~/packagelist-explicit.log\x1b[0m"
+        echo ""
