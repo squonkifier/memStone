@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# stonemeta: title: Arch - Refresh keys
+# stonemeta: title: Refresh keys (Archlinux)
 # stonemeta: description: Did your updates start to fail with low trust or GPG style errors? Might be an old keyring. Update it with this!
-#
+# stonemeta: command: pacman-key --refresh-keys && pacman-key --populate
 
 echo "Are you sure? Y/n"
 read -p ": " choice

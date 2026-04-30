@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# stonemeta: title: Arch - Export - Packagelist
+# stonemeta: title:  Export Packagelist (Archlinux)
 # stonemeta: description: Export a list of all installed packages to ~/.packagelist.log
-#
+# stonemeta: command: pacman -Qq
 
 pacman -Qq | tee ~/packagelist.log
 echo ""

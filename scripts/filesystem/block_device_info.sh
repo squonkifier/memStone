@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # stonemeta: title: Block device info
 # stonemeta: description: Shows basic information about attached storage drives
-#
+# stonemeta: command: lsblk -f
 
 lsblk -f
 echo ""

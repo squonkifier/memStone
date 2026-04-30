@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # stonemeta: title: Ping Test
 # stonemeta: description: Test connectivity to hosts with ping. Checks if remote hosts are reachable.
-#
+# stonemeta: command: ping -c 4
 # Sends 4 ping packets and reports packet loss and average latency.
 # Useful for diagnosing network issues.
 

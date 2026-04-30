@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# stonemeta: title: Arch - Update - Yay
+# stonemeta: title: Update Yay (Archlinux)
 # stonemeta: description: Basic interactive system update for system packages + AUR packages, using the Yay package manager.
-#
+# stonemeta: command: yay
 
 echo "Please enter your root password:"
 yay

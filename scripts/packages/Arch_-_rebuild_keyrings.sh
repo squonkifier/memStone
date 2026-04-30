@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# stonemeta: title: Arch - Rebuild keys
+# stonemeta: title: Rebuild keys (Archlinux)
 # stonemeta: description: Totally wipe and reload your package manager keyring.
-#
+# stonemeta: command: pacman-key --init && pacman-key --populate
 
 echo "Are you sure? Y/n"
 read -p ": " choice

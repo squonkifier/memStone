@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# stonemeta: title: Arch - Update - Pacman
+# stonemeta: title: Update Pacman (Archlinux)
 # stonemeta: description: Basic interactive system update for base system packages, using the core Pacman package manager.
-#
+# stonemeta: command: sudo pacman -Syyu
 
 echo "Please enter your root password:"
 sudo pacman -Syyu

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # stonemeta: title: Disk Summary
 # stonemeta: description: Shows current filesystem layout and storage amounts
-#
+# stonemeta: command: df -h | head -20
 
 echo "=== Filesystem Disk Usage ==="
 df -h 2>/dev/null | head -20 || echo "df command not available"

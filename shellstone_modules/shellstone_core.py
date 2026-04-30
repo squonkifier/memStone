@@ -152,9 +152,14 @@ def _parse_script_summary(path: Path, command: str = "", command_explicit: bool 
         summary_parts.append(initial_text)
 
     # Collect subsequent comment lines as filler text
-    # Skip metadata lines and blank lines, then collect comments until non-comment
+    # After the stonemeta description line, collect comment lines that
+    # are part of the description block. Stop when we see:
+    #   - a blank line (empty line)
+    #   - an empty comment line ('#' or '# ') - always signals end
+    #   - a non-comment line
+    #   - a section header comment (---, ===, ###, etc.)
     filler_text = []
-    started_collecting = False
+    collecting = False
     
     for line in lines[desc_line_idx + 1:]:
         stripped = line.strip()
@@ -163,13 +168,15 @@ def _parse_script_summary(path: Path, command: str = "", command_explicit: bool 
         if META_TITLE_RE.match(stripped) or META_DESC_RE.match(stripped) or META_CMD_RE.match(stripped):
             continue
         
-        # If blank line and not started collecting yet, skip it
+        # Blank line = end of description block
         if not stripped:
-            if not started_collecting:
-                continue
-            else:
-                # Blank line after collecting has started - stop
-                break
+            break
+        
+        # Empty comment line ('#' or '#' with only whitespace after) = end
+        # Check the raw line to handle '# ' correctly
+        raw_stripped = line.strip()
+        if raw_stripped == '#' or raw_stripped.startswith('# ') and len(raw_stripped.lstrip('#').strip()) == 0:
+            break
         
         # If not a comment line, stop collecting
         if not stripped.startswith('#'):
@@ -177,9 +184,22 @@ def _parse_script_summary(path: Path, command: str = "", command_explicit: bool 
         
         # Extract text after the comment character
         text = stripped.lstrip('#').strip()
-        if text:
-            filler_text.append(text)
-            started_collecting = True
+        
+        # Skip if no text after comment marker (shouldn't happen due to above check)
+        if not text:
+            break
+        
+        # Detect section headers that should NOT be part of description
+        if text.startswith('---') or text.startswith('===') or text.startswith('###'):
+            break
+        
+        # If line looks like a section title (all caps and reasonably long)
+        if text.isupper() and len(text) > 3:
+            break
+        
+        # This is a valid description comment line
+        filler_text.append(text)
+        collecting = True
 
     # Add filler text if any
     if filler_text:

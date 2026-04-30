@@ -2,7 +2,6 @@
 # stonemeta: title: Logs Cleaner
 # stonemeta: description: Deletes basic system caches and logs for quick, clean recovery of storage space
 # stonemeta: command: journalctl --vacuum-time=1m, rm -Rf /var/lib/systemd/coredump, /usr/lib/debug
-#
 
 # Track total size of deleted files in bytes
 total_deleted=0
