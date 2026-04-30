@@ -4,9 +4,9 @@
 # stonemeta: command: pacman-key --init && pacman-key --populate
 
 echo "Are you sure? Y/n"
-read -p ": " choice
+read -p "" choice
 
-# Handle empty input as 'n', accept both cases
+# Only Y proceeds, everything else cancels
 case $choice in
     [Yy])
     echo "Please enter your root password:"
@@ -16,13 +16,8 @@ case $choice in
         echo ""
         echo -e "\x1b[1;32mComplete! Press Ctrl+X to return to main menu!\x1b[0m"
         ;;
-    [Nn]|"")
-        echo -e "\x1b[1;32mPress Ctrl+X to return to main menu!\x1b[0m"
-        exit 1
-        ;;
     *)
-        echo ""
-        echo -e "\x1b[1;32mInvalid choice. Please select Y or n, or press Ctrl+X to return to menu\x1b[0m"
+        echo -e "\x1b[1;32mPress Ctrl+X to return to main menu!\x1b[0m"
         exit 1
         ;;
 esac

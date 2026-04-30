@@ -2,6 +2,7 @@
 # stonemeta: title: Webpage Scraper
 # stonemeta: description: Quickly scrape files from a website. Paste your URL into the script, and it will download loose files from the wepage. Supports zip|mp3|ogg|rar|tar|gz
 
+echo -e "\x1b[1;32mFiles will be saved in: $PWD\x1b[0m"
 echo "Please input a URL to scrape:"
 read URL
 DOWNLOAD_DIR="." # Current working directory
