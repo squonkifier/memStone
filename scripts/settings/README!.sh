@@ -2,7 +2,7 @@
 # stonemeta: title: Readme!
 # stonemeta: description: Tells you how this program works!
 #
-echo -e "\x1b[31m⚬○ squonkAdmin ○⚬\x1b[0m"
+echo -e "\x1b[31m⚬○ shellStone ○⚬\x1b[0m"
 echo "tiny terminal UI for fancy presentation of pre-commented shell scripts stored locally"
 echo ""
 
