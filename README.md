@@ -6,7 +6,7 @@ tiny terminal UI for fancy presentation of pre-commented shell scripts stored lo
 ## Benefits
 - Simple interface and metadata rules
 - Extensible; drop in your Py & Bash scripts
-- Unnecessarily parallaxed starfield effects
+- Graceful, parallaxed starfield effects
 - ~50kb
 
 ## Requirements

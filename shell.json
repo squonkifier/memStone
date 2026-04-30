@@ -83,6 +83,7 @@
     4,
     2
   ],
-  "PARTICLE_DENSITY": 0.06,
+  "PARTICLE_DENSITY": 0.03,
+  "PARTICLE_SPEED_CAP": 0.2,
   "BOTTOM_HEIGHT": 14
 }
