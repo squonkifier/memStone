@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# stonemeta: title: Port Scanner (Local)
+# stonemeta: title: Local Open Ports
 # stonemeta: description: Scans for open ports on localhost or a specified target. Common ports only.
 #
 # Scans ports 21,22,23,25,53,80,110,143,443,465,587,993,995,3306,5432,8080,8443

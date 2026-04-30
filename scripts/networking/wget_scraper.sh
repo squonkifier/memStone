@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 # stonemeta: title: Webpage Scraper
-# stonemeta: description: Quickly scrape files from a website. Paste your URL into the script, and it will download loose files from the wepage. Supports zip|mp3|ogg|rar|tar|gz
+# stonemeta: description: Quickly scrape files from a website. Paste your URL into the script, and then your desired extensions separated by a comma. [.zip,mp3,lol]
+
+ if ! command -v wget &> /dev/null; then
+     echo "Error: wget is required but not installed. Please install wget to
+ use this script."
+     exit 1
+ fi
 
 echo -e "\x1b[1;32mFiles will be saved in: $PWD/scraped\x1b[0m"
+echo ""
 echo "Please input a URL to scrape:"
 read URL
-echo "Please input the file extensions you want to download from the page, separated by commas. [.zip,mp3,etc]"
+echo ""
+echo "Please input the file extensions you want to download from the page, separated by commas. [zip,mp3,omg,wow]"
+echo ""
 read FILETYPES
 FILETYPES=$(echo "$FILETYPES" | tr ',' '|')
 SCRAPED_DIR="$PWD/scraped"

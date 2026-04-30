@@ -4,6 +4,12 @@
 # stonemeta: command: for f in *.wav; do ffmpeg -i "$f" -c:a libvorbis -q:a 8 "${f%.wav}.ogg" && rm "$f"
 #
 
+ if ! command -v ffmpeg &> /dev/null; then
+     echo "Error: wget is required but not installed. Please install wget to
+ use this script."
+     exit 1
+ fi
+
 # Check for WAV files before proceeding
 shopt -s nullglob
 wav_files=(*.wav)
