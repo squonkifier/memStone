@@ -182,7 +182,3 @@ def show_error(stdscr, message: str):
     box.border()
     box.refresh()
     box.getch()
-
-
-# Alias for backward compatibility
-_show_soft_error = show_error

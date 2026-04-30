@@ -2,6 +2,7 @@
 Core module for shellstone: Constants, data models, and script discovery.
 """
 
+import os
 import re
 import json
 from dataclasses import dataclass, field
@@ -40,7 +41,6 @@ SPINNER_FRAMES = _config["SPINNER_FRAMES"]
 
 # Particle layers for pseudo-3D (far to near)
 PARTICLE_LAYERS = _config["PARTICLE_LAYERS"]
-PARTICLE_COLORS_BASIC = _config["PARTICLE_COLORS_BASIC"]
 PARTICLE_DENSITY = _config["PARTICLE_DENSITY"]
 PARTICLE_SPEED_CAP = _config.get("PARTICLE_SPEED_CAP", 1.0)
 BOTTOM_HEIGHT = _config["BOTTOM_HEIGHT"]
@@ -83,14 +83,12 @@ def discover_scripts(directory: Path) -> list[ScriptInfo]:
             info.summary = _parse_script_summary(entry, info.command, info.command_explicit)
             scripts.append(info)
 
-    # Set defaults for any missing titles / commands
+    # Set defaults for missing titles/descriptions
     for s in scripts:
         if not s.title:
             s.title = s.name.replace("_", " ").title()
         if not s.description:
             s.description = f"Run {s.title}"
-        if s.command == "General":
-            s.command = "Scripts"
 
     return scripts
 
@@ -212,7 +210,3 @@ def _parse_script_summary(path: Path, command: str = "", command_explicit: bool 
         summary_parts.append(f"command: {command}")
 
     return '\n'.join(summary_parts) if summary_parts else "No Description Found"
-
-
-# Need to import os after the function that uses it to avoid circular issues
-import os

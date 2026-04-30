@@ -28,7 +28,7 @@ class OutputWindow:
         self.scrollback: list[list[tuple[str, int]]] = []
         self.scroll_offset = 0
         self.input_buffer: str = ""
-        self.line_buffer: str = ""
+        self._line_buffer: str = ""
 
     def __enter__(self):
         self.window.keypad(True)
@@ -53,10 +53,10 @@ class OutputWindow:
 
     def feed(self, data: str):
         """Append chunk of output text, preserving ANSI codes and line breaks."""
-        self.line_buffer += data
+        self._line_buffer += data
         new_lines = 0
-        while '\n' in self.line_buffer:
-            line, self.line_buffer = self.line_buffer.split('\n', 1)
+        while '\n' in self._line_buffer:
+            line, self._line_buffer = self._line_buffer.split('\n', 1)
             formatted_line = self._parse_ansi(line)
             self.scrollback.append(formatted_line)
             new_lines += 1
@@ -123,10 +123,10 @@ class OutputWindow:
 
     def flush(self):
         """Flush any remaining partial line in the buffer to scrollback."""
-        if self.line_buffer:
-            formatted_line = self._parse_ansi(self.line_buffer)
+        if self._line_buffer:
+            formatted_line = self._parse_ansi(self._line_buffer)
             self.scrollback.append(formatted_line)
-            self.line_buffer = ""
+            self._line_buffer = ""
             self._render()
 
     def _render(self):
@@ -192,8 +192,8 @@ class OutputWindow:
                 display_lines.append([(seg_text, seg_attr)])
 
         # Display any buffered text (incomplete lines like prompts) at the end
-        if self.line_buffer:
-            prompt_line = self._parse_ansi(self.line_buffer)
+        if self._line_buffer:
+            prompt_line = self._parse_ansi(self._line_buffer)
             display_lines.append(prompt_line)
 
         total_display = len(display_lines)

@@ -52,7 +52,6 @@ def main_menu(stdscr):
     selected_pane_idx = 0
     pane_scroll_offset = 0
     script_running = False
-    # output_win = None
 
     # Visual effects
     spinner = Spinner()
@@ -227,8 +226,7 @@ def main_menu(stdscr):
         # --- Footer ---
         footer = " ↑↓ Navigate  ←→ Panes  Enter Run  R Refresh  Q Quit "
         try:
-            cwd = os.getcwd()
-            dir_text = f" Current Directory: {cwd}"
+            dir_text = f" Current Directory: {os.getcwd()}"
             stdscr.addstr(lines - 1, 0, dir_text[:cols].ljust(cols), curses.A_DIM | curses.color_pair(6))
             stdscr.addstr(lines - 2, 0, footer.center(cols)[:cols], curses.A_REVERSE | curses.color_pair(5))
         except curses.error:
@@ -346,7 +344,6 @@ def main_menu(stdscr):
                 
                 # Script finished, return to normal mode
                 script_running = False
-                # output_win = None
                 stdscr.timeout(100)
 
 

@@ -88,9 +88,7 @@ class ParticleSystem:
 
         max_particles = int(lines * cols * PARTICLE_DENSITY)
         if len(self.particles) < max_particles:
-            spawn_count = 1
-            if random.random() < 0.1:
-                spawn_count = random.randint(3, 5)
+            spawn_count = random.randint(3, 5) if random.random() < 0.1 else 1
             is_meteor = random.random() < 0.02
             is_super = not is_meteor and random.random() < 0.01
             z = random.uniform(0.7 if is_meteor else 0.1, 1.0)
@@ -106,7 +104,7 @@ class ParticleSystem:
                     y = random.uniform(1, lines-2)
                     x = random.uniform(1, cols-2)
 
-                p = self.Particle(
+                particle = self.Particle(
                     y=y, x=x, z=z,
                     vx=random.uniform(-1.5, 1.5) * meteor_mult * speed_mult * PARTICLE_SPEED_CAP,
                     vy=random.uniform(-0.3, 0.3) * (meteor_mult / 2) * speed_mult * PARTICLE_SPEED_CAP,
@@ -119,7 +117,7 @@ class ParticleSystem:
                     is_glitter=random.random() < 0.005,
                     glow=random.uniform(0.3, 1.0) if random.random() < 0.1 else 0.0
                 )
-                self.particles.append(p)
+                self.particles.append(particle)
 
         # Random surprise events every 10-30s
         now = time.monotonic()
@@ -131,7 +129,7 @@ class ParticleSystem:
 
             if self.event_type == 'star_shower':
                 for _ in range(random.randint(5, 10)):
-                    p = self.Particle(
+                    particle = self.Particle(
                         y=random.uniform(0, lines-1), x=random.uniform(0, cols-1),
                         z=0.8, vx=random.uniform(-15, -8) * PARTICLE_SPEED_CAP,
                         vy=random.uniform(0.5, 1.5) * PARTICLE_SPEED_CAP,
@@ -139,10 +137,10 @@ class ParticleSystem:
                         life=1.5, is_meteor=True, drift_phase=0, twinkle_speed=0,
                         is_glitter=False, glow=0
                     )
-                    self.particles.append(p)
+                    self.particles.append(particle)
             elif self.event_type == 'sparkle_burst' and target_y != -1:
                 for _ in range(random.randint(10, 15)):
-                    p = self.Particle(
+                    particle = self.Particle(
                         y=target_y + random.uniform(-3, 3), x=target_x + random.uniform(-3, 3),
                         z=random.uniform(0.5, 1.0), vx=random.uniform(-2, 2) * PARTICLE_SPEED_CAP,
                         vy=random.uniform(-2, 2) * PARTICLE_SPEED_CAP,
@@ -151,116 +149,116 @@ class ParticleSystem:
                         is_meteor=False, drift_phase=random.uniform(0, 2*math.pi),
                         twinkle_speed=random.uniform(6, 10), is_glitter=True, glow=1.0
                     )
-                    self.particles.append(p)
+                    self.particles.append(particle)
 
         self.particles = [p for p in self.particles if self._update_particle(p, now, dt, lines, cols, target_y, target_x)]
 
-    def _update_particle(self, p, now, dt, lines, cols, target_y, target_x):
+    def _update_particle(self, particle, now, dt, lines, cols, target_y, target_x):
         """Update a single particle. Returns True if particle survives."""
         breathe = 1.0 + 0.2 * math.sin(now * 0.1)
-        current_x = math.sin(now * 0.2 + p.y * 0.1 + p.drift_phase) * 0.4 * breathe
-        current_y = math.cos(now * 0.3 + p.x * 0.1 + p.drift_phase) * 0.15 * breathe
+        current_x = math.sin(now * 0.2 + particle.y * 0.1 + particle.drift_phase) * 0.4 * breathe
+        current_y = math.cos(now * 0.3 + particle.x * 0.1 + particle.drift_phase) * 0.15 * breathe
 
         if target_y != -1:
-            dy = p.y - target_y
-            dx = p.x - target_x
+            dy = particle.y - target_y
+            dx = particle.x - target_x
             dist_sq = dx*dx + (dy*2)**2
             if dist_sq < 36:
                 force = (36 - dist_sq) / 36
-                p.vx += (dx / 4) * force * 5
-                p.vy += (dy / 2) * force * 5
+                particle.vx += (dx / 4) * force * 5
+                particle.vy += (dy / 2) * force * 5
 
         # Event effects
         if self.event_active and now < self.event_end and self.event_type == 'swirl':
             cx, cy = cols/2, lines/2
-            dx, dy = p.x - cx, p.y - cy
+            dx, dy = particle.x - cx, particle.y - cy
             dist = math.hypot(dx, dy)
             if dist > 0:
                 angle = math.atan2(dy, dx)
-                p.vx += math.cos(angle + math.pi/2) * 0.3 * p.z
-                p.vy += math.sin(angle + math.pi/2) * 0.3 * p.z
+                particle.vx += math.cos(angle + math.pi/2) * 0.3 * particle.z
+                particle.vy += math.sin(angle + math.pi/2) * 0.3 * particle.z
 
         # Drag to prevent velocity buildup over time
-        p.vx *= 0.98
-        p.vy *= 0.98
+        particle.vx *= 0.98
+        particle.vy *= 0.98
 
         # Strict velocity clamping
         max_vel = 1.5 * PARTICLE_SPEED_CAP
-        vel = math.hypot(p.vx, p.vy)
+        vel = math.hypot(particle.vx, particle.vy)
         if vel > max_vel:
             scale = max_vel / vel
-            p.vx *= scale
-            p.vy *= scale
+            particle.vx *= scale
+            particle.vy *= scale
 
-        p.x += (p.vx + current_x) * p.z * dt * 8
-        p.y += (p.vy + current_y) * p.z * dt * 8
+        particle.x += (particle.vx + current_x) * particle.z * dt * 8
+        particle.y += (particle.vy + current_y) * particle.z * dt * 8
 
-        p.life -= dt
-        if p.life <= 0:
+        particle.life -= dt
+        if particle.life <= 0:
             return False
 
-        # Remove near-stationary particles (they look like jarring static lines)
-        if not p.is_meteor and math.hypot(p.vx, p.vy) < 0.05:
+        # Remove near-stationary particles
+        if not particle.is_meteor and math.hypot(particle.vx, particle.vy) < 0.05:
             return False
 
-        p.x = (p.x + cols) % cols
-        p.y = (p.y + lines) % lines
+        particle.x = (particle.x + cols) % cols
+        particle.y = (particle.y + lines) % lines
         return True
 
     def render(self, stdscr, lines: int, cols: int):
         """Render all particles to the screen."""
         now = time.monotonic()
-        for p in self.particles:
+        for particle in self.particles:
             try:
-                layer_idx = (2 if p.z > 0.75 else 1 if p.z > 0.35 else 0)
+                layer_idx = (2 if particle.z > 0.75 else 1 if particle.z > 0.35 else 0)
                 attr = 0
 
-                if p.is_meteor:
+                if particle.is_meteor:
                     # Skip slow meteors (they appear as jarring static lines)
-                    if math.hypot(p.vx, p.vy) < 0.2:
+                    if math.hypot(particle.vx, particle.vy) < 0.2:
                         continue
-                    char = "☄" if p.z > 0.8 else "●"
+                    char = "☄" if particle.z > 0.8 else "●"
                     attr = curses.A_BOLD
                     # Meteor trail with fade
-                    if p.z > 0.7:
+                    if particle.z > 0.7:
                         for trail in range(1, 4):
-                            tx = int(p.x - p.vx * 0.15 * trail)
-                            ty = int(p.y - p.vy * 0.15 * trail)
+                            tx = int(particle.x - particle.vx * 0.15 * trail)
+                            ty = int(particle.y - particle.vy * 0.15 * trail)
                             try:
-                                stdscr.addstr(ty, tx, "·", curses.A_DIM | curses.color_pair(10 + p.color))
+                                stdscr.addstr(ty, tx, "·", curses.A_DIM | curses.color_pair(10 + particle.color))
                             except curses.error:
                                 pass
                 else:
                     chars = PARTICLE_LAYERS[layer_idx]
-                    char = chars[hash(p.phase) % len(chars)]
-                    base_attr = curses.A_DIM if p.z < 0.4 else (curses.A_BOLD if p.z > 0.8 else 0)
-                    twinkle = math.sin(now * p.twinkle_speed + p.phase * 10)
+                    char = chars[hash(particle.phase) % len(chars)]
+                    base_attr = curses.A_DIM if particle.z < 0.4 else (curses.A_BOLD if particle.z > 0.8 else 0)
+                    twinkle = math.sin(now * particle.twinkle_speed + particle.phase * 10)
                     attr = base_attr | (curses.A_BOLD if twinkle > 0.8 else (curses.A_DIM if twinkle < -0.8 else 0))
 
                 # Glitter flash
-                if p.is_glitter and random.random() < 0.3:
+                if particle.is_glitter and random.random() < 0.3:
                     color_pair = 10 + (len(self.shades)-1)
                     attr = curses.A_BOLD
                 else:
-                    color_pair = 10 + p.color
+                    color_pair = 10 + particle.color
 
                 # Glow pulse
-                if p.glow > 0:
-                    pulse = 0.5 + 0.5 * math.sin(now * p.twinkle_speed * 2 + p.phase)
+                if particle.glow > 0:
+                    pulse = 0.5 + 0.5 * math.sin(now * particle.twinkle_speed * 2 + particle.phase)
                     if pulse > 0.7:
                         attr |= curses.A_BOLD
                     elif pulse < 0.3:
                         attr |= curses.A_DIM
 
                 # Organic fade-out based on remaining life
-                life_frac = max(0, p.life / 20.0)  # Normalize (meteors have shorter life)
+                life_frac = max(0, particle.life / 20.0)
                 if life_frac < 0.3:
                     if life_frac < 0.1:
-                        continue  # Skip rendering in final moments (organic disappearance)
+                        continue
                     if life_frac < 0.2:
                         attr |= curses.A_DIM
 
-                stdscr.addstr(int(p.y), int(p.x), char, attr | curses.color_pair(color_pair))
+                stdscr.addstr(int(particle.y), int(particle.x), char, attr | curses.color_pair(color_pair))
             except curses.error:
                 pass
 
