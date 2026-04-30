@@ -8,14 +8,15 @@ import random
 import time
 from dataclasses import dataclass
 
-from .shellstone_core import PARTICLE_LAYERS, PARTICLE_DENSITY, PARTICLE_SPEED_CAP
+from .shellstone_core import (
+    PARTICLE_LAYERS, PARTICLE_DENSITY, PARTICLE_SPEED_CAP,
+    SPINNER_FRAMES
+)
 
 
 # ---------------------------------------------------------------------------
 # Spinner - Animated selection indicator
 # ---------------------------------------------------------------------------
-SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-
 
 class Spinner:
     """Animated spinner for menu selection indicator."""

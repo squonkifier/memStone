@@ -8,42 +8,73 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Configuration Loading
 # ---------------------------------------------------------------------------
-SCRIPTS_DIR = Path(__file__).parent.parent / "scripts"
 
+# Bundled locations (relative to this file)
+BUNDLED_BASE_DIR = Path(__file__).parent.parent
+BUNDLED_SCRIPTS_DIR = BUNDLED_BASE_DIR / "scripts"
+BUNDLED_CONFIG_PATH = BUNDLED_BASE_DIR / "shell.json"
 
-def _load_config():
-    """Load configuration from shell.json file."""
-    config_path = Path(__file__).parent.parent / "shell.json"
+# Global state for configuration (will be initialized in load_configuration)
+SCRIPTS_DIR = BUNDLED_SCRIPTS_DIR
+_config = {}
+PANES = []
+META_TITLE_RE = None
+META_DESC_RE = None
+META_CMD_RE = None
+SPINNER_FRAMES = []
+PARTICLE_LAYERS = []
+PARTICLE_DENSITY = 0.03
+PARTICLE_SPEED_CAP = 1.0
+BOTTOM_HEIGHT = 14
+
+def load_configuration():
+    """Load configuration from shell.json and set up script directories.
+    Checks current working directory first, then falls back to bundled files.
+    """
+    global SCRIPTS_DIR, _config, PANES, META_TITLE_RE, META_DESC_RE, META_CMD_RE
+    global SPINNER_FRAMES, PARTICLE_LAYERS, PARTICLE_DENSITY, PARTICLE_SPEED_CAP, BOTTOM_HEIGHT
+
+    # 1. Determine Config Path
+    local_config = Path.cwd() / "shell.json"
+    if local_config.exists():
+        config_path = local_config
+    else:
+        config_path = BUNDLED_CONFIG_PATH
+
     if not config_path.exists():
         raise FileNotFoundError(f"Missing config file: {config_path}")
+
     with open(config_path, encoding="utf-8") as f:
-        return json.load(f)
+        _config = json.load(f)
 
+    # 2. Determine Scripts Directory
+    local_scripts = Path.cwd() / "scripts"
+    if local_scripts.is_dir():
+        SCRIPTS_DIR = local_scripts
+    else:
+        SCRIPTS_DIR = BUNDLED_SCRIPTS_DIR
 
-_config = _load_config()
+    # 3. Initialize Constants from Config
+    PANES = [
+        (name, SCRIPTS_DIR / dirname, color)
+        for name, dirname, color in _config["PANES"]
+    ]
 
-# Top-level panes: (display_name, directory, color_pair)
-PANES = [
-    (name, SCRIPTS_DIR / dirname, color)
-    for name, dirname, color in _config["PANES"]
-]
+    META_TITLE_RE = re.compile(_config["META_TITLE_RE"], re.IGNORECASE)
+    META_DESC_RE = re.compile(_config["META_DESC_RE"], re.IGNORECASE)
+    META_CMD_RE = re.compile(_config["META_CMD_RE"], re.IGNORECASE)
 
-META_TITLE_RE = re.compile(_config["META_TITLE_RE"], re.IGNORECASE)
-META_DESC_RE = re.compile(_config["META_DESC_RE"], re.IGNORECASE)
-META_CMD_RE = re.compile(_config["META_CMD_RE"], re.IGNORECASE)
+    SPINNER_FRAMES = _config.get("SPINNER_FRAMES", ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"])
+    PARTICLE_LAYERS = _config.get("PARTICLE_LAYERS", [["·"], ["°"], ["○"]])
+    PARTICLE_DENSITY = _config.get("PARTICLE_DENSITY", 0.03)
+    PARTICLE_SPEED_CAP = _config.get("PARTICLE_SPEED_CAP", 1.0)
+    BOTTOM_HEIGHT = _config.get("BOTTOM_HEIGHT", 14)
 
-# Spinner frames for selection indicator
-SPINNER_FRAMES = _config["SPINNER_FRAMES"]
-
-# Particle layers for pseudo-3D (far to near)
-PARTICLE_LAYERS = _config["PARTICLE_LAYERS"]
-PARTICLE_DENSITY = _config["PARTICLE_DENSITY"]
-PARTICLE_SPEED_CAP = _config.get("PARTICLE_SPEED_CAP", 1.0)
-BOTTOM_HEIGHT = _config["BOTTOM_HEIGHT"]
+# Initial load (default behavior)
+load_configuration()
 
 
 # ---------------------------------------------------------------------------
