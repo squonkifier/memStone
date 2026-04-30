@@ -38,7 +38,7 @@ def load_configuration():
     global SPINNER_FRAMES, PARTICLE_LAYERS, PARTICLE_DENSITY, PARTICLE_SPEED_CAP, BOTTOM_HEIGHT
 
     # 1. Determine Config Path
-    local_config = Path.cwd() / "memstone.json"
+    local_config = Path.cwd() / "config.json"
     if local_config.exists():
         config_path = local_config
     else:
