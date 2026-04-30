@@ -1,5 +1,5 @@
 # memStone
-https://github.com/user-attachments/assets/eb19355a-4f71-44d7-9754-3d293f066560
+[https://github.com/user-attachments/assets/eb19355a-4f71-44d7-9754-3d293f066560](https://github.com/user-attachments/assets/b80e137a-be53-4435-b30b-b7de438caee5)
 
 Rolodex your shell scripts in stellar style. In the spirit of [eos-welcome](https://github.com/endeavouros-team/welcome); Good for helping new users, good for one-off black book tricks whose purpose you'd forget.
 
