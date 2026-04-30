@@ -6,14 +6,15 @@ tiny terminal UI for fancy presentation of pre-commented shell scripts stored lo
 ## Benefits
 - Simple interface and metadata rules
 - Extensible; drop in your Py & Bash scripts
-- Graceful, parallaxed starfield effects
-- ~50kb
+- Installable; run ./install.sh and makes it terminal-accessible
+- starfield effects
+- ~60kb
 
 ## Requirements
-- Python 3.10+ (`curses`, `subprocess`, `pathlib`, `json`)
+- Python 3.10+
 
 ## Usage
-Run `python3 memstone.py`.
+Run `install.sh`. then find it in a new terminal as `memstone`
 
 Categories are auto-populated with .sh and .py scripts when placed in their respective folders
 
