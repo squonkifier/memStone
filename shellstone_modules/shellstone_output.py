@@ -53,6 +53,8 @@ class OutputWindow:
 
     def feed(self, data: str):
         """Append chunk of output text, preserving ANSI codes and line breaks."""
+        # Strip character set selection sequences like ESC ( B that cause garbled output
+        data = re.sub(r'\x1b[()][A-Za-z]', '', data)
         self._line_buffer += data
         new_lines = 0
         while '\n' in self._line_buffer:

@@ -4,7 +4,7 @@
 # stonemeta: command: yay
 
 echo "Please enter your root password:"
-yay
+yay --noprogressbar --noconfirm
 
 echo ""
 echo -e "\x1b[1;32mComplete! Press Q to return to main menu!\x1b[0m"
